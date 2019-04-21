@@ -1,7 +1,7 @@
 GHDL=ghdl
 FLAGS=""
 
-all: mux regfile calc
+all: mux full_adder add_sub regfile calc
 
 %: %.vhdl %_tb.vhdl
 	$(GHDL) -a $@.vhdl $@_tb.vhdl
