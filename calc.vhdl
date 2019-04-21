@@ -25,6 +25,20 @@ architecture behav of calc is
   signal WrEn, ALUOp: std_logic;
 begin
 
+  --Control logic
+  ALUOp <= op6;
+  WdSel(0) <= op7 and (not op6);
+  WrEn <= op7 nand op6;
+  process(ALUOut) is
+  begin
+    if (ALUOut = "00000000") then
+      Cmp(0) <= '0';
+    else
+      Cmp(0) <= '1';
+    end if;
+  end process;
+  --End control logic
+
   rs1 <= op3 & op2;
   rs2 <= op1 & op0;
   ws  <= op5 & op4;
@@ -32,7 +46,7 @@ begin
   jump_amt <= op4 & '1';
 
   PCrd <= PC;
-  PC <= PCwd;
+  PC <= PCwr;
 
   reg: entity work.regfile
   port map(
