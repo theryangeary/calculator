@@ -9,13 +9,13 @@ port(
   WE: in std_logic;
   clk: in std_logic;
 
-  rd1, rd2: out std_logic_vector(7 downto 0)
+  rd1, rd2: out std_logic_vector(7 downto 0) := "00000000"
 );
 end regfile;
 
 architecture behav of regfile is
 
-  signal r0, r1, r2, r3, mux1out, mux2out: std_logic_vector(7 downto 0);
+  signal r0, r1, r2, r3, mux1out, mux2out: std_logic_vector(7 downto 0) := "00000000";
 
 begin
 
@@ -54,7 +54,7 @@ begin
     end if;
   end process;
 
-  process(clk) is
+  process(clk, mux1out, mux2out) is
   begin
     if (clk = '1') then
       rd1 <= mux1out;
