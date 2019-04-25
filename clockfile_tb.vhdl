@@ -44,7 +44,7 @@ begin
   type pattern_array is array (natural range <>) of pattern_type;
   constant patterns : pattern_array := (
   --wd    in  out rd
-  ("00", '0', '0', "00"),
+  ("00", '0', '0', "UU"),
   ("00", '1', '1', "00"),
   ("10", '0', '0', "00"),
   ("10", '1', '0', "10"),
@@ -61,9 +61,9 @@ begin
       wait for 1 ns;
       --  Check the outputs.
       assert rd = patterns(n).rd
-      report "bad rd1 value" severity error;
+      report "bad rd value" severity error;
       assert clk_out = patterns(n).clk_out
-      report "bad rd2 value" severity error;
+      report "bad clk_out value" severity error;
     end loop;
     assert false report "end of test" severity note;
     --  Wait forever; this will finish the simulation.
