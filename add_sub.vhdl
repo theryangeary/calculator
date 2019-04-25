@@ -31,7 +31,7 @@ begin
       B => mux(i),
       carry_in => carry(i),
       carry_out => carry(i+1),
-      O => output(i)
+      O => O(i)
       );
     mux(i) <= B(i) xor sel;
   end generate adder_gen;
@@ -41,7 +41,6 @@ begin
   process is
   begin
     wait until (rising_edge(clock));
-      O <= output;
       if (sel = '0') then
         over_flow <= carry(N) xor carry(N-1);
         under_flow <= '0';

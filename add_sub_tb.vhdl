@@ -47,7 +47,7 @@ begin
   --  The patterns to apply.
   type pattern_array is array (natural range <>) of pattern_type;
   constant patterns : pattern_array := (
-  ("0000", "0000", '0', '0', 'U', 'U', "UUUU" ),
+  ("0000", "0000", '0', '0', 'U', 'U', "0000" ),
   ("0001", "0000", '0', '1', '0', '0', "0001" ),
   ("0001", "0001", '0', '1', '0', '0', "0010" ),
   ("0010", "0001", '0', '1', '0', '0', "0011" ),
