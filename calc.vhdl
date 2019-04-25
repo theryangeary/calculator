@@ -12,7 +12,7 @@ port(
       op5: in std_logic;
       op6: in std_logic;
       op7: in std_logic;
-      clk: in std_logic
+      clk_input: in std_logic
     );
 end calc;
 
@@ -21,17 +21,19 @@ architecture behav of calc is
   signal CmpInc, PCInc: std_logic_vector(1 downto 0);
   signal rs1, rs2, ws, jump_amt: std_logic_vector(1 downto 0);
   signal imm: std_logic_vector(3 downto 0);
-  signal Cmp, WdSel: std_logic_vector(0 downto 0);
-  signal WrEn, ALUOp: std_logic;
+  signal Cmp: std_logic_vector(0 downto 0);
+  signal WdSel, WrEn, ALUOp: std_logic;
+  signal clk: std_logic := '0';
+  signal clk_rd, clk_wd: std_logic_vector(1 downto 0) := "00";
 begin
 
   --Control logic
   ALUOp <= op6;
-  WdSel(0) <= op7 and (not op6);
+  WdSel <= op7 and (not op6);
   WrEn <= op7 nand op6;
-  process(ALUOut) is
+  process(ALUOut, op7, op6, op5) is
   begin
-    if (ALUOut = "00000000") then
+    if (ALUOut = "00000000" and op7 = '1' and op6 = '1' and op5 = '0') then
       Cmp(0) <= '0';
     else
       Cmp(0) <= '1';
@@ -48,28 +50,23 @@ begin
   PCrd <= PC;
   PC <= PCwr;
 
+  ImmEx <= op3 & op3 & op3 & op3 & op3 & op2 & op1 & op0;
+
   reg: entity work.regfile
   port map(
     rs1 => rs1,
     rs2 => rs2,
+    rd1 => rd1,
+    rd2 => rd2,
     ws => ws,
     wd => wd,
     WE => WrEn,
     clk => clk
   );
 
-  wd_choice: entity work.mux
-  generic map(
-    N => 1
-  )
-  port map(
-    A => ALUOut,
-    B => ImmEx,
-    C => ALUOut,
-    D => ImmEx,
-    sel => WdSel,
-    O => wd
-  );
+  with WdSel select
+    wd <= ALUOut when '0',
+          ImmEx when others;
 
   alu: entity work.add_sub
   generic map(
@@ -83,43 +80,24 @@ begin
     O => ALUOut
   );
 
-  cmp_adder: entity work.add_sub
-  generic map(
-    N => 2
-  )
+  with Cmp select
+    clk_wd <= '0' & clk_rd(1) when "1",
+              op4 & '1' when others;
+
+  clockfile0: entity work.clockfile
   port map(
-    A => jump_amt,
-    B => "01",
-    sel => '0',
-    clock => clk,
-    O => CmpInc
+    clk_in => clk_input,
+    clk_out => clk,
+    wd => clk_wd,
+    rd => clk_rd
   );
 
-  pc_mux: entity work.mux
-  generic map(
-    N => 1,
-    INLENGTH => 2
-  )
-  port map(
-    A => CmpInc,
-    B => "01",
-    C => CmpInc,
-    D => "01",
-    sel => Cmp,
-    O => PCInc
-  );
-
-  pc_adder: entity work.add_sub
-  generic map(
-    N => 8
-  )
-  port map(
-    A => PCrd,
-    B => PCInc,
-    sel => '0',
-    clock => clk,
-    O => PCwr
-  );
+  process(clk) is
+  begin
+    if (clk = '0' and op7 = '1' and op6 = '1' and op5 = '1') then
+      report "Value: " & integer'image(to_integer(signed(rd1)));
+    end if;
+  end process;
 
 end behav;
 
