@@ -10,7 +10,7 @@ port(
     A:  in std_logic_vector (N-1 downto 0); -- for loading
     B:   in std_logic_vector (N-1 downto 0); -- for loadin
     sel: in std_logic; -- 0 Add 1 Subtract
-    clock:    in std_logic; -- positive level triggering in problem 3
+    --clock:    in std_logic; -- positive level triggering in problem 3
     O:  out std_logic_vector(N-1 downto 0); -- output the current register content
     over_flow: out std_logic;
     under_flow: out std_logic
@@ -19,7 +19,6 @@ end add_sub;
 
 architecture behav of add_sub is
 signal carry: std_logic_vector (N downto 0);
-signal output: std_logic_vector(N-1 downto 0);
 signal mux: std_logic_vector(N-1 downto 0);
 begin
 
@@ -38,9 +37,9 @@ begin
 
   carry(0) <= sel;
 
-  process is
+  process(carry, sel) is
   begin
-    wait until (rising_edge(clock));
+    --wait until (rising_edge(clock));
       if (sel = '0') then
         over_flow <= carry(N) xor carry(N-1);
         under_flow <= '0';
