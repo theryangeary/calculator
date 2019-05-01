@@ -76,7 +76,6 @@ begin
     A => rd1,
     B => rd2,
     sel => ALUOp,
-    clock => clk,
     O => ALUOut
   );
 
@@ -95,7 +94,7 @@ begin
   process(clk) is
   begin
     if (clk = '0' and op7 = '1' and op6 = '1' and op5 = '1') then
-      report "Value: " & integer'image(to_integer(signed(rd1)));
+      report integer'image(to_integer(signed(rd1)));
     end if;
   end process;
 
