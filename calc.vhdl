@@ -93,8 +93,17 @@ begin
 
   process(clk) is
   begin
-    if (clk = '0' and op7 = '1' and op6 = '1' and op5 = '1') then
-      report integer'image(to_integer(signed(rd1)));
+    if (clk = '0' and op7 = '1' and op6 = '1' and op5 = '1' and rd1(7) = '0') then
+      report integer'image(to_integer(signed(rd1)) mod 10000 / 1000) &
+      integer'image(to_integer(signed(rd1)) mod 1000 / 100) &
+      integer'image(to_integer(signed(rd1)) mod 100 / 10) &
+      integer'image(to_integer(signed(rd1)) mod 10 / 1);
+    end if;
+    if (clk = '0' and op7 = '1' and op6 = '1' and op5 = '1' and rd1(7) = '1') then
+      report '-' &
+      integer'image(abs(to_integer(signed(rd1)) rem 1000 / 100)) &
+      integer'image(abs(to_integer(signed(rd1)) rem 100 / 10)) &
+      integer'image(abs(to_integer(signed(rd1)) rem 10 / 1));
     end if;
   end process;
 
