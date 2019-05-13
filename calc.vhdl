@@ -17,7 +17,7 @@ port(
 end calc;
 
 architecture behav of calc is
-  signal PC, PCrd, PCwr, rd1, rd2, wd, ALUOut, ImmEx: std_logic_vector(7 downto 0);
+  signal rd1, rd2, wd, ALUOut, ImmEx: std_logic_vector(7 downto 0);
   signal CmpInc, PCInc: std_logic_vector(1 downto 0);
   signal rs1, rs2, ws, jump_amt: std_logic_vector(1 downto 0);
   signal imm: std_logic_vector(3 downto 0);
@@ -46,9 +46,6 @@ begin
   ws  <= op5 & op4;
   imm <= op3 & op2 & op1 & op0;
   jump_amt <= op4 & '1';
-
-  PCrd <= PC;
-  PC <= PCwr;
 
   ImmEx <= op3 & op3 & op3 & op3 & op3 & op2 & op1 & op0;
 
