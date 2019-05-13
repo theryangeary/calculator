@@ -41,7 +41,7 @@ begin
 
   process (clk) is
   begin
-    if (WE = '1' and clk = '0') then
+    if (WE = '1' and clk = '1') then
       if (ws = "00") then
         r0 <= wd;
       elsif (ws = "01" ) then
@@ -56,7 +56,7 @@ begin
 
   process(clk, mux1out, mux2out) is
   begin
-    if (clk = '1') then
+    if (clk = '0') then
       rd1 <= mux1out;
       rd2 <= mux2out;
     end if;
