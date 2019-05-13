@@ -1,7 +1,7 @@
 GHDL=ghdl
 FLAGS= --ieee=standard
 
-all: mux full_adder add_sub regfile clockfile calc
+all: mux full_adder add_sub regfile clockfile pipe calc
 
 %: %.vhdl %_tb.vhdl
 	$(GHDL) -a $(FLAGS) $@.vhdl $@_tb.vhdl

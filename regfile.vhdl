@@ -6,7 +6,7 @@ entity regfile is
 port(
   rs1, rs2, ws: in std_logic_vector(1 downto 0);
   wd: in std_logic_vector(7 downto 0);
-  WE: in std_logic;
+  we: in std_logic;
   clk: in std_logic;
 
   rd1, rd2: out std_logic_vector(7 downto 0) := "00000000"
@@ -39,9 +39,9 @@ begin
     O => mux2out
   );
 
-  process (clk) is
+  process (clk, ws, wd, we) is
   begin
-    if (WE = '1' and clk = '1') then
+    if (we = '1' and clk = '1') then
       if (ws = "00") then
         r0 <= wd;
       elsif (ws = "01" ) then
