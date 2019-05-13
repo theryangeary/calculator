@@ -17,14 +17,22 @@ port(
 end calc;
 
 architecture behav of calc is
-  signal rd1, rd2, wd, ALUOut, ImmEx: std_logic_vector(7 downto 0);
-  signal CmpInc, PCInc: std_logic_vector(1 downto 0);
-  signal rs1, rs2, ws, jump_amt: std_logic_vector(1 downto 0);
+  signal ImmEx: std_logic_vector(7 downto 0);
+  signal jump_amt: std_logic_vector(1 downto 0);
   signal imm: std_logic_vector(3 downto 0);
-  signal Cmp: std_logic_vector(0 downto 0);
-  signal WdSel, WrEn, ALUOp: std_logic;
+  signal WdSel: std_logic;
   signal clk: std_logic := '0';
   signal clk_rd, clk_wd: std_logic_vector(1 downto 0) := "00";
+
+  signal ALUOp, ALUOpE, ALUOpW: std_logic;
+  signal CmpOp, CmpOpE, CmpOpW: std_logic;
+  signal Cmp, CmpE, CmpW: std_logic;
+  signal CmpResult: std_logic;
+  signal rd1, rd1E: std_logic_vector(7 downto 0);
+  signal rd2, rd2E: std_logic_vector(7 downto 0);
+  signal ws, wsE, wsW: std_logic_vector(1 downto 0);
+  signal we, weE, weE: std_logic;
+  signal ALUOut, ALUOutW: std_logic_vector(7 downto 0);
 begin
 
   --Control logic
