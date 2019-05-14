@@ -39,28 +39,40 @@ architecture behav of calc is
 
   signal oldws: std_logic_vector(1 downto 0);
 signal tmpws: std_logic_vector(1 downto 0);
-  signal hazard: std_logic;
+  signal potential_hazard, hazard: std_logic;
 
   signal opcode: std_logic_vector(7 downto 0);
 begin
 
-  opcode <= op7& op6 & op5 & op4 & op3 & op2 & op1 & op0;
+  with hazard select
+    opcode <= op7 & op6 & op5 & op4 & op3 & op2 & op1 & op0 when '0',
+              "11111111" when others;
   --Control logic
-  ALUOp <= op6;
-  WdSel <= op7 and (not op6);
-  we <= op6 nand op6;
-  Cmp <= op7 and op6 and (not op5);
-  print <= op7 and op6 and op5;
-  hazard <= (op7 and not op6) or (op7 and op6 and op5);
+  ALUOp <= opcode(6);
+  WdSel <= opcode(7) and (not opcode(6));
+  we <= opcode(7) nand opcode(6);
+  Cmp <= opcode(7) and opcode(6) and (not opcode(5));
+  print <= opcode(7) and opcode(6) and opcode(5) and not opcode(4);
+  potential_hazard <= (op7 and not op6) or (op7 and op6 and op5 and not op4);
   --End control logic
 
-  rs1 <= op3 & op2;
-  rs2 <= op1 & op0;
-  ws  <= op5 & op4;
-  imm <= op3 & op2 & op1 & op0;
-  jump_amt <= op4 & '1';
+  process(potential_hazard, op7, op6, op5, op4, op3, op2, op1, op0) is
+  begin
+    if (potential_hazard = '1' and (oldws = rs1 or oldws = rs2)) then
+      hazard <= '1';
+    else
+      hazard <= '0';
+    end if;
+  end process;
 
-  ImmEx <= op3 & op3 & op3 & op3 & op3 & op2 & op1 & op0;
+
+  rs1 <= opcode(3) & opcode(2);
+  rs2 <= opcode(1) & opcode(0);
+  ws  <= opcode(5) & opcode(4);
+  imm <= opcode(3) & opcode(2) & opcode(1) & opcode(0);
+  jump_amt <= opcode(4) & '1';
+
+  ImmEx <= opcode(3) & opcode(3) & opcode(3) & opcode(3) & opcode(3) & opcode(2) & opcode(1) & opcode(0);
 
   reg: entity work.regfile
   port map(
@@ -78,7 +90,7 @@ begin
   port map(
     ALUOp => ALUOp,
     ALUOpO => ALUOpE,
-    CmpOp => op4,
+    CmpOp => opcode(4),
     CmpOpO => CmpOpE,
     Cmp => Cmp,
     CmpO => CmpE,
