@@ -56,7 +56,7 @@ begin
 
   process(clk, mux1out, mux2out) is
   begin
-    if (clk = '0') then
+    if (clk'event and clk = '0') then
       rd1 <= mux1out;
       rd2 <= mux2out;
     end if;

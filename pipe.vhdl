@@ -12,6 +12,10 @@ entity pipe is
         CmpO: out std_logic;
         CmpOp: in std_logic;
         CmpOpO: out std_logic;
+        ImmEx: in std_logic_vector(7 downto 0);
+        ImmExO: out std_logic_vector(7 downto 0);
+        wdsel: in std_logic;
+        wdselO: out std_logic;
         we: in std_logic;
         weO: out std_logic;
         rd1: in std_logic_vector(7 downto 0);
@@ -39,6 +43,8 @@ begin
       CmpO <= Cmp;
       rd1O <= rd1;
       rd2O <= rd2;
+      wdselO <= wdsel;
+      ImmExO <= ImmEx;
       wsO <= ws;
       weO <= we;
       ALUOutO <= ALUOut;
