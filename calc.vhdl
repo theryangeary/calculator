@@ -71,9 +71,16 @@ begin
     end if;
   end process;
 
-  process(clk, oldws, rs1, rs2, potential_hazard) is
+  process(hazard) is
   begin
-    if (clk'event and clk = '1') then
+    if (hazard = '1') then
+      potential_hazard <= '0';
+    end if;
+  end process;
+
+  process(clk) is
+  begin
+    if (clk'event and clk = '0') then
       if ((potential_hazard = '1') and ((oldws = rs1) or (oldws = rs2))) then
         hazard <= '1';
       else
